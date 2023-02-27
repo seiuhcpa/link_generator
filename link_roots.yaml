@@ -3,23 +3,25 @@ cope:
   fields:
       employer:
         url_tag: "&entry.145013492="
-private:
-  url: "https://form.jotform.com/222704327334046?"
-  fields:
-      employer:
-        url_tag: "employer="
-private_nmo:
-  url: "https://form.jotform.com/222704327334046?"
-  fields:
-      employer:
-        url_tag: "employer="
-      nmo:
-        url_tag: 'nmo='
-        url_value: 'NMO'
-public:
-  url: "https://docs.google.com/forms/d/e/1FAIpQLSe2vFhtZYnAJxjr7dmMqxdn5Bv9bdG8czBGhS44xCx2ky4iqw/viewform?usp=pp_url"
-  fields:
+main:
+  private:
+    url: "https://form.jotform.com/222704327334046?"
+    fields:
+        employer:
+          url_tag: "employer="
+  public:
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSe2vFhtZYnAJxjr7dmMqxdn5Bv9bdG8czBGhS44xCx2ky4iqw/viewform?usp=pp_url"
+    fields:
       employer:
         url_tag: "&entry.145013492="
       institution:
         url_tag: "&entry.1088925371="
+nmo:
+  private:
+    url: "https://form.jotform.com/222704327334046?"
+    fields:
+        employer:
+          url_tag: "employer="
+        nmo:
+          url_tag: 'nmo='
+          url_value: 'NMO'

@@ -1,3 +1,5 @@
 Flask~=2.2.2
-SQLAlchemy~=2.0.0
+SQLAlchemy~=1.4.46
 PyYAML~=6.0
+sqlalchemy-bigquery~=1.5.0
+requests~=2.28.2
