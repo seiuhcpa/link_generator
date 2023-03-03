@@ -34,7 +34,7 @@ class Rebrandly:
         path = 'links'
         request_parts = [self.url_root, path, link_id]
         request = '/'.join(request_parts)
-        response = requests.get(request,
+        response = requests.post(request,
                                 json=payload,
                                 headers=self.headers)
         return response
@@ -44,7 +44,7 @@ class Rebrandly:
         request_parts = [self.url_root, path]
         request = '/'.join(request_parts)
         payload['domain'] = self.domain
-        response = requests.get(request,
+        response = requests.post(request,
                                 json=payload,
                                 headers=self.headers)
         return response

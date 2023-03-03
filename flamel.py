@@ -1,5 +1,6 @@
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import *
+from sqlalchemy import text, insert, func, select
 import yaml
 
 class Alchemist:
@@ -37,3 +38,12 @@ class Alchemist:
         table_rows = table_exe.fetchall()
         result = [row._asdict() for row in table_rows]
         return result
+
+    def upload_data(self, return_dict, table_name):
+        schema = 'rebrandly.'
+        requests_table = self.get_table(schema+table_name)
+        stmt = insert(requests_table).values(return_dict)
+        engine = self.create_engine()
+        print(stmt.compile().params)
+        with engine.connect() as conn:
+            conn.execute(stmt)
