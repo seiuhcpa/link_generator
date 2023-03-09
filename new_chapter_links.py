@@ -18,8 +18,10 @@ def create_new_link_payload(record, link_gen):
                'destination': link_creator.create_link({'employer': record['chapter_name']})}
     return payload
 
+
 def create_links(records, link_type, flamel):
     link_generator = LinkGenerator(link_type)
+    rebrandly_connection = Rebrandly('api_keychain.yaml')
     for chap in records:
         pl = create_new_link_payload(chap, link_generator)
         time_stamp = datetime.now().isoformat()
@@ -56,14 +58,15 @@ def create_links(records, link_type, flamel):
                                      'request_timestamp': time_stamp}
             flamel.upload_data(status_upload_package, 'requests')
 
-uncovered_chapter_query = text('''select * from dbt_epb.cl__short_codes_to_create''')
 
-alci = Alchemist()
+def main():
+    uncovered_chapter_query = text('''select 
+    * 
+    from dbt_epb.cl__short_codes_to_create''')
+    alci = Alchemist()
+    new_chapters = alci.get_query(uncovered_chapter_query)
+    create_links(new_chapters, 'main', alci)
 
-new_chapters = alci.get_query(uncovered_chapter_query)
 
-rebrandly_connection = Rebrandly('api_keychain.yaml')
+main()
 
-link_gen = LinkGenerator('main')
-
-create_links(new_chapters, 'main', alci)
