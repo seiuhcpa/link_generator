@@ -24,6 +24,8 @@ class LinkGenerator:
         if chapter_type in self.link_key:
             self.url_root = self.link_key[chapter_type]['url']
             self.url_fields = self.link_key[chapter_type]['fields']
+        else:
+            raise ValueError('That link type does not support this kind of chapter')
         return self
 
     def create_link(self, value_dict):
