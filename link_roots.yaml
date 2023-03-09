@@ -1,4 +1,5 @@
 cope:
+  suffix: "cope"
   url: "https://docs.google.com/forms/d/e/1FAIpQLSdZrVKgG57OmFWyEAKcLJUe8aLwaRAeLzeqz3HG3oHgYwPPcQ/viewform?usp=pp_url"
   fields:
       employer:
@@ -17,6 +18,7 @@ main:
       institution:
         url_tag: "&entry.1088925371="
 nmo:
+  suffix: "nmo"
   private:
     url: "https://form.jotform.com/222704327334046?"
     fields:
