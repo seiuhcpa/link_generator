@@ -1,6 +1,4 @@
 import json
-
-from sqlalchemy import text, insert, func, select
 from url_creator import LinkGenerator
 from rebrandly_requester import Rebrandly
 from flamel import Alchemist
@@ -27,7 +25,6 @@ def request_and_record_link_creation(rec):
     time_stamp = datetime.now().isoformat()
     rec['link_date'] = time_stamp
     rec['request_timestamp'] = time_stamp
-    rec['slashtag'] = rec['short_code']
     request = rebrandly_connection.create_link(pl)
     rec['request_status'] = request.status_code
     if rec['request_status'] == requests.codes.ok:
@@ -42,6 +39,8 @@ def request_and_record_link_creation(rec):
 def create_links(records: List[Dict], link_type: str, flamel: Alchemist):
     for rec in records:
         rec['link_type'] = link_type
+        rec['slashtag'] = rec['short_code']
+        request_and_record_link_creation(rec)
 
 
 

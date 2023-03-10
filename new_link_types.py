@@ -1,5 +1,4 @@
 import json
-
 from url_creator import LinkGenerator
 from rebrandly_requester import Rebrandly
 from flamel import Alchemist
@@ -10,27 +9,27 @@ import requests
 
 def main(link_type: str):
     records = get_type_to_create(link_type)
-    alci = Alchemist()
     for rec in records:
         print(rec)
         rec['link_type'] = link_type
         link_suffix = get_suffix(rec['link_type'])
-        rec['new_slashtag'] = rec['slashtag'] + link_suffix
+        rec['slashtag'] = rec['slashtag'] + link_suffix
         rec['new_link'] = create_link_type(rec)
         if rec['new_link'] is not None:
-            create_and_upload(rec, alci)
+            create_and_upload(rec)
         print(rec['new_link'])
 
 
 def create_new_link_type_payload(record: dict):
     payload = {'title': record['chapter_name'],
-               'slashtag': record['new_slashtag'],
+               'slashtag': record['slashtag'],
                'favorite': False,
                'destination': record['new_link']}
     return payload
 
 
-def create_and_upload(rec: dict, flamel: Alchemist):
+def create_and_upload(rec: dict):
+    flamel = Alchemist()
     pl = create_new_link_type_payload(rec)
     time_stamp = datetime.now().isoformat()
     rec['link_date'] = time_stamp
@@ -45,7 +44,6 @@ def create_and_upload(rec: dict, flamel: Alchemist):
         rec['rebrandly_id'] = request_data['id']
         flamel.upload_data(rec, 'rebrandly.requests')
         flamel.upload_data(rec, 'rebrandly.chapter_values')
-        rec['slashtag'] = rec['new_slashtag']
         flamel.upload_data(rec, 'rebrandly.short_codes')
     elif rec['request_status'] is not None:
         rec['rebrandly_id'] = None
