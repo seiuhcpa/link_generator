@@ -2,7 +2,7 @@
 Keeps the prefilled links of the active chapters for SEIUHCPA up to date.
 * On chapter name changes redirects its shortlink to the new chapter name.
 * Creates new prefilled links to sign up members for new chapters. (Called **main**)
-* Creates dirivitives of the **main** link for specific purposes (ex. nmo, cope)  
+* Creates derivatives of the **main** link for specific purposes (ex. nmo, cope)  
 ## New Chapter Links
 While chapter name changes and derivatives links require no input to run. 
 Creating the **main** link for new chapters requires that new chapter to have a *slashcode* (or short_link).
