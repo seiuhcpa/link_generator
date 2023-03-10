@@ -5,12 +5,11 @@ from url_creator import LinkGenerator
 from rebrandly_requester import Rebrandly
 from flamel import Alchemist
 from datetime import datetime
+from typing import List, Dict
 import requests
 
 
-
-
-def create_new_link_payload(record, link_gen):
+def create_new_link_payload(record: Dict, link_gen: LinkGenerator):
     link_creator = link_gen.set_chapter_type(record['employer_type'].lower())
     payload = {'title': record['chapter_name'],
                'slashtag': record['short_code'],
@@ -19,54 +18,37 @@ def create_new_link_payload(record, link_gen):
     return payload
 
 
-def create_links(records, link_type, flamel):
-    link_generator = LinkGenerator(link_type)
+def request_and_record_link_creation(rec):
+    flamel = Alchemist()
+    link_generator = LinkGenerator(rec['link_type'])
     rebrandly_connection = Rebrandly('api_keychain.yaml')
-    for chap in records:
-        pl = create_new_link_payload(chap, link_generator)
-        time_stamp = datetime.now().isoformat()
-        request = rebrandly_connection.create_link(pl)
-        if request.status_code == requests.codes.ok:
-            request_data = json.loads(request.text)
-            status_upload_package = {'rebrandly_id': request_data['id'],
-                                     'request_status': request.status_code,
-                                     'request_type': 'Link Update',
-                                     'request_timestamp': time_stamp}
-            flamel.upload_data(status_upload_package, 'requests')
-            chapter_value_upload = {
-                'chapter_code': chap['chapter_code'],
-                'chapter_name': chap['chapter_name'],
-                'link_title': chap['chapter_name'],
-                'rebrandly_id': request_data['id'],
-                'chapter_id': chap['chapter_id'],
-                'institution_id': chap['institution_id'],
-                'institution_code': chap['institution_code'],
-                'link_type': link_type,
-                'employer_type': chap['employer_type'],
-                'link_date': time_stamp
-            }
-            flamel.upload_data(chapter_value_upload, 'chapter_values')
-            short_code_upload = {
-                'slashtag': chap['short_code'],
-                'rebrandly_id': request_data['id'],
-                'link_date': time_stamp
-            }
-            flamel.upload_data(short_code_upload, 'short_codes')
-        else:
-            status_upload_package = {'request_status': request.status_code,
-                                     'request_type': 'Link Creation',
-                                     'request_timestamp': time_stamp}
-            flamel.upload_data(status_upload_package, 'requests')
+    pl = create_new_link_payload(rec, link_generator)
+    rec['request_type'] = 'Link Creation'
+    time_stamp = datetime.now().isoformat()
+    rec['link_date'] = time_stamp
+    rec['request_timestamp'] = time_stamp
+    rec['slashtag'] = rec['short_code']
+    request = rebrandly_connection.create_link(pl)
+    rec['request_status'] = request.status_code
+    if rec['request_status'] == requests.codes.ok:
+        request_data = json.loads(request.text)
+        rec['rebrandly_id'] = request_data['id']
+        flamel.upload_data(rec, 'rebrandly.requests')
+        flamel.upload_data(rec, 'rebrandly.chapter_values')
+        flamel.upload_data(rec, 'rebrandly.short_codes')
+    else:
+        flamel.upload_data(rec, 'requests')
+
+def create_links(records: List[Dict], link_type: str, flamel: Alchemist):
+    for rec in records:
+        rec['link_type'] = link_type
+
 
 
 def main():
-    uncovered_chapter_query = text('''select 
-    * 
-    from dbt_epb.cl__short_codes_to_create''')
     alci = Alchemist()
-    new_chapters = alci.get_query(uncovered_chapter_query)
+    short_codes_query = alci.get_table('dbt_epb.cl__short_codes_to_create').select()
+    new_chapters = alci.get_query(short_codes_query)
     create_links(new_chapters, 'main', alci)
 
-
 main()
-
