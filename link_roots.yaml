@@ -5,6 +5,7 @@ cope:
       employer:
         url_tag: "&entry.145013492="
 main:
+  suffix: None
   private:
     url: "https://form.jotform.com/222704327334046?"
     fields:

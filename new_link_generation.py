@@ -1,4 +1,4 @@
-from new_link_creation import *
+from link_creation_functions import *
 import yaml
 from flamel import Alchemist
 
@@ -18,6 +18,18 @@ def get_type_to_create(link_type: str):
     else:
         records = []
     return records
+
+
+def create_links_for_new_chapers():
+    alchemist = Alchemist()
+    short_codes_query = alchemist.get_table('dbt_epb.cl__short_codes_to_create').select()
+    new_chapters = alchemist.get_query(short_codes_query)
+    link_type = 'main'
+    for rec in new_chapters:
+        rec['link_type'] = link_type
+        rec['slashtag'] = rec['short_code']
+        rec['new_link'] = create_link_type(rec)
+        create_and_upload(rec)
 
 
 def create_link_types(link_type: str):
@@ -41,5 +53,6 @@ def get_suffix(link_type: str):
     return suffix
 
 
+create_links_for_new_chapers()
 create_link_types('nmo')
 create_link_types('cope')
