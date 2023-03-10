@@ -1,14 +1,15 @@
 from sqlalchemy.engine import create_engine
 from sqlalchemy.schema import *
-from sqlalchemy import text, insert, func, select
+from sqlalchemy import insert
 import yaml
+
 
 class Alchemist:
 
     def __init__(self):
         creds = yaml.load(open('api_keychain.yaml', 'r'), yaml.BaseLoader)
-        self.bqcreds = creds['bigquery']
-        self.bq_engine = create_engine('bigquery://', credentials_info=self.bqcreds)
+        self.bq_creds = creds['bigquery']
+        self.bq_engine = create_engine('bigquery://', credentials_info=self.bq_creds)
         self.metadata_obj = MetaData()
 
     def get_table(self, table_and_schema):
@@ -20,7 +21,7 @@ class Alchemist:
         return conn
 
     def create_engine(self):
-        new_engine = create_engine('bigquery://', credentials_info=self.bqcreds, future=True)
+        new_engine = create_engine('bigquery://', credentials_info=self.bq_creds, future=True)
         return new_engine
 
     def get_query(self, query):
